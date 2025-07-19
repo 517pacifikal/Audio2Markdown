@@ -1,0 +1,4 @@
+config.json
+.audio2md/
+audio/input/*
+audio/output/*

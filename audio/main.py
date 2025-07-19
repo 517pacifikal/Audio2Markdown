@@ -133,7 +133,6 @@ def main():
 
     print("[main] Querying result...")
     result_json = query_task(request_id, headers)
-    print(f"[main] Result: {json.dumps(result_json, ensure_ascii=False, indent=2)}")
     
     utterances = result_json.get("result", {}).get("utterances", [])
     if not utterances:
