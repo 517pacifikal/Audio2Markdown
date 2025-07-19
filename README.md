@@ -16,6 +16,47 @@ Audio2Markdown 支持的场景包括但不限于：
 
 ## 运行指南
 
-python3.12
+### Step1. 依赖安装
 
-brew install ffmpeg
+```shell
+
+# 创建虚拟环境并进入
+python3 -m venv .audio2md
+source .audio2md/bin/activate  
+
+# 安装Python依赖
+pip install -r requirements.txt
+
+```
+
+### Step2. 配置管理
+
+1. 在项目根目录创建 `config.json` 文件，这是本项目的核心配置文件。文件具体字段参见 [config.json 配置文件说明](#configjson-配置文件说明)
+
+## `config.json` 配置文件说明
+
+本项目的 `config.json` 文件用于配置音频转写及模型调用的相关参数。结构如下：
+
+```json
+
+{
+    "AUDIO_CONFIGS": {  // 音频转文本相关配置
+        "MODEL_SRC": "BYTEDANCE",   //指定当前使用的模型来源, 此处以默认的字节火山方舟模型为例
+        "BYTEDANCE": {  // 对于每个模型来源的具体配置
+            "AUDIO_FILE": "./audio/input/xxx.mp3",  // 导入音频路径
+            "OUTPUT_FILE": "./audio/output/xxx.txt",    // 导出文本路径
+            "APP_KEY": "...",   // 模型服务的应用 App Key。
+            "ACCESS_KEY": "...",    // 模型服务的访问密钥。
+            "TOS_BUCKET": "...",    // TOS（对象存储）桶名，用于上传本地音频文件，请根据文档自行配置
+            "TOS_REGION": "...",    // TOS 区域。
+            "TOS_ENDPOINT": "...",  // TOS 服务 Endpoint。
+            "TOS_ACCESS_KEY": "...",    // TOS 访问密钥。
+            "TOS_SECRET_KEY": "..." //TOS 密钥。
+        }
+    }
+}
+
+```
+
+
+
