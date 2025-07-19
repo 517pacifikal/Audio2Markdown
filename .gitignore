@@ -2,3 +2,5 @@ config.json
 .audio2md/
 audio/input/*
 audio/output/*
+*/__pycache__
+*/*/__pycache__
