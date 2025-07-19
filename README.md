@@ -35,28 +35,41 @@ pip install -r requirements.txt
 
 ## `config.json` 配置文件说明
 
-本项目的 `config.json` 文件用于配置音频转写及模型调用的相关参数。结构如下：
+本项目的 `config.json` 文件用于配置音频转写及模型调用的相关参数。结构示例如下：
 
 ```json
-
 {
-    "AUDIO_CONFIGS": {  // 音频转文本相关配置
-        "MODEL_SRC": "BYTEDANCE",   //指定当前使用的模型来源, 此处以默认的字节火山方舟模型为例
-        "BYTEDANCE": {  // 对于每个模型来源的具体配置
-            "AUDIO_FILE": "./audio/input/xxx.mp3",  // 导入音频路径
-            "OUTPUT_FILE": "./audio/output/xxx.txt",    // 导出文本路径
-            "APP_KEY": "...",   // 模型服务的应用 App Key。
-            "ACCESS_KEY": "...",    // 模型服务的访问密钥。
-            "TOS_BUCKET": "...",    // TOS（对象存储）桶名，用于上传本地音频文件，请根据文档自行配置
-            "TOS_REGION": "...",    // TOS 区域。
-            "TOS_ENDPOINT": "...",  // TOS 服务 Endpoint。
-            "TOS_ACCESS_KEY": "...",    // TOS 访问密钥。
-            "TOS_SECRET_KEY": "..." //TOS 密钥。
+    "AUDIO_CONFIGS": {
+        "MODEL_SRC": "BYTEDANCE",
+        "BYTEDANCE": {
+            "AUDIO_FILE": "./audio/input/xxx.mp3",
+            "OUTPUT_FILE": "./audio/output/xxx.txt",
+            "APP_KEY": "...",
+            "ACCESS_KEY": "...",
+            "TOS_BUCKET": "...",
+            "TOS_REGION": "...",
+            "TOS_ENDPOINT": "...",
+            "TOS_ACCESS_KEY": "...",
+            "TOS_SECRET_KEY": "..."
         }
     }
 }
-
 ```
+
+各字段含义说明：
+
+- `AUDIO_CONFIGS`：音频转文本相关配置的总入口。
+    - `MODEL_SRC`：指定当前使用的模型来源（如 "BYTEDANCE"）。
+    - `BYTEDANCE`：具体模型来源的详细配置。
+        - `AUDIO_FILE`：导入音频文件的路径。
+        - `OUTPUT_FILE`：转写后文本的输出路径。
+        - `APP_KEY`：模型服务的应用 App Key。
+        - `ACCESS_KEY`：模型服务的访问密钥。
+        - `TOS_BUCKET`：TOS（对象存储）桶名，用于上传本地音频文件。
+        - `TOS_REGION`：TOS 区域。
+        - `TOS_ENDPOINT`：TOS 服务 Endpoint。
+        - `TOS_ACCESS_KEY`：TOS 访问密钥。
+        - `TOS_SECRET_KEY`：TOS
 
 
 
