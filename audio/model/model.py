@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 class ModelClient(ABC):
     @abstractmethod
     def submit_task(self, audio_url, **kwargs):
