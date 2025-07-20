@@ -27,9 +27,9 @@ source .audio2md/bin/activate
 # 安装Python依赖
 pip install -r requirements.txt
 
-docker run -p 6379:6379 --name redismod \
--v /mydata/redismod/data:/data \
--d redislabs/redismod:preview
+# 安装并运行支持 RediSearch 的 Redis 服务，作为默认的 RAG 向量数据库
+docker pull redislabs/redismod:preview  
+docker run -d --name redismod -p 6379:6379 redislabs/redismod:preview
 
 ```
 
@@ -39,7 +39,7 @@ docker run -p 6379:6379 --name redismod \
 
 ## `config.json` 配置文件说明
 
-本项目的 `config.json` 文件用于配置音频转写及模型调用的相关参数。结构示例如下：
+本项目的 `config.json` 文件用于配置音频转写、文档加载、向量化、索引等各环节的参数。结构示例如下：
 
 ```json
 {
@@ -56,24 +56,63 @@ docker run -p 6379:6379 --name redismod \
             "TOS_ACCESS_KEY": "...",
             "TOS_SECRET_KEY": "..."
         }
+    },
+    "INDEXING": {
+        "FILE_PATH": "./files/",
+        "EMBEDDING": {
+            "BASE_URL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "API_KEY": "sk-xxx",
+            "MODEL": "text-embedding-v4"
+        },
+        "INDEXER": {
+            "TYPE": "REDIS",
+            "REDIS": {
+                "ADDR": "localhost:6379",
+                "KEY_PREFIX": "rag.",
+                "BATCH_SIZE": 1
+            },
+            "FAISS": {
+                "INDEX_PATH": "/tmp/faiss.index",
+                "BATCH_SIZE": 1
+            }
+        },
+        "LOADER": {},
+        "TRANSFORMER": {
+            "HEADERS": {
+                "#": "title"
+            },
+            "TRIM_HEADERS": false
+        }
     }
 }
 ```
 
 各字段含义说明：
 
-- `AUDIO_CONFIGS`：音频转文本相关配置的总入口。
-    - `MODEL_SRC`：指定当前使用的模型来源（如 "BYTEDANCE"）。
-    - `BYTEDANCE`：具体模型来源的详细配置。
-        - `AUDIO_FILE`：导入音频文件的路径。
-        - `OUTPUT_FILE`：转写后文本的输出路径。
-        - `APP_KEY`：模型服务的应用 App Key。
-        - `ACCESS_KEY`：模型服务的访问密钥。
-        - `TOS_BUCKET`：TOS（对象存储）桶名，用于上传本地音频文件。
-        - `TOS_REGION`：TOS 区域。
-        - `TOS_ENDPOINT`：TOS 服务 Endpoint。
-        - `TOS_ACCESS_KEY`：TOS 访问密钥。
-        - `TOS_SECRET_KEY`：TOS
+- `AUDIO_CONFIGS`：音频转文本相关配置。
+    - `MODEL_SRC`：指定当前使用的语音转写模型来源（如 "BYTEDANCE"）。
+    - `BYTEDANCE`：字节大模型语音转写相关参数。
+        - `AUDIO_FILE`：输入音频文件路径。
+        - `OUTPUT_FILE`：转写后文本输出路径。
+        - `APP_KEY`、`ACCESS_KEY`：API 访问凭证。
+        - `TOS_BUCKET`、`TOS_REGION`、`TOS_ENDPOINT`、`TOS_ACCESS_KEY`、`TOS_SECRET_KEY`：TOS 对象存储相关配置，用于音频文件上传。
+
+- `INDEXING`：RAG 检索增强生成相关配置。
+    - `FILE_PATH`：待加载文档的目录或文件路径，支持批量加载目录下所有文件。
+    - `EMBEDDING`：向量化模型相关配置。
+        - `BASE_URL`：向量化 API 服务地址。
+        - `API_KEY`：API 访问密钥。
+        - `MODEL`：使用的向量模型名称。
+    - `INDEXER`：向量数据库相关配置。
+        - `TYPE`：索引类型，支持 "REDIS" 或 "FAISS"。
+        - `REDIS`：Redis 相关参数（如地址、key 前缀、批处理大小）。
+        - `FAISS`：FAISS 相关参数（如索引文件路径、批处理大小）。
+    - `LOADER`：文档加载器相关配置（如有特殊参数可在此扩展）。
+    - `TRANSFORMER`：文档切分与预处理相关配置。
+        - `HEADERS`：用于 Markdown 等文档的标题层级映射。
+        - `TRIM_HEADERS`：是否去除标题前后的空白字符。
+
+请根据实际需求填写和调整上述参数，确保各环节配置正确，系统即可顺利完成音频转写、文档加载、向量化、索引与检索等全
 
 
 
