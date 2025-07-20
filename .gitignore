@@ -5,3 +5,5 @@ audio/output/*
 */__pycache__
 */*/__pycache__
 files/*
+input/*
+output/*

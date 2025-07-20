@@ -20,13 +20,6 @@ Audio2Markdown 支持的场景包括但不限于：
 
 ```bash
 
-# 创建虚拟环境并进入
-python3 -m venv .audio2md
-source .audio2md/bin/activate  
-
-# 安装Python依赖
-pip install -r requirements.txt
-
 # 安装并运行支持 RediSearch 的 Redis 服务，作为默认的 RAG 向量数据库
 docker pull redislabs/redismod:preview  
 docker run -d --name redismod -p 6379:6379 redislabs/redismod:preview
