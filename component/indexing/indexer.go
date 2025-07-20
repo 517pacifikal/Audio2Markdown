@@ -5,70 +5,69 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/cloudwego/eino-ext/components/indexer/redis"
 	"github.com/cloudwego/eino/components/indexer"
 	"github.com/cloudwego/eino/schema"
 	"github.com/google/uuid"
 	redisCli "github.com/redis/go-redis/v9"
-
-	redispkg "github.com/cloudwego/eino-examples/quickstart/eino_assistant/pkg/redis"
 )
 
-func init() {
-	err := redispkg.Init()
-	if err != nil {
-		log.Fatalf("failed to init redis index: %v", err)
+// Redis索引器
+func newRedisIndexer(ctx context.Context, redisCfg config.RedisConfig) (indexer.Indexer, error) {
+	redisClient := redisCli.NewClient(&redisCli.Options{
+		Addr:     redisCfg.Addr,
+		Protocol: 2,
+	})
+
+	config := &redis.IndexerConfig{
+		Client:    redisClient,
+		KeyPrefix: redisCfg.KeyPrefix,
+		BatchSize: redisCfg.BatchSize,
+		DocumentToHashes: func(ctx context.Context, doc *schema.Document) (*redis.Hashes, error) {
+			if doc.ID == "" {
+				doc.ID = uuid.New().String()
+			}
+			key := doc.ID
+
+			metadataBytes, err := json.Marshal(doc.MetaData)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal metadata: %+v", err)
+			}
+
+			return &redis.Hashes{
+				Key: key,
+				Field2Value: map[string]redis.FieldValue{
+					"content":  {Value: doc.Content, EmbedKey: "vector"},
+					"metadata": {Value: metadataBytes},
+				},
+			}, nil
+		},
 	}
+
+	embeddingIns, err := NewEmbedding(ctx)
+	if err != nil {
+		return nil, err
+	}
+	config.Embedding = embeddingIns
+	return redis.NewIndexer(ctx, config)
+}
+
+// FAISS索引器
+func newFaissIndexer(ctx context.Context, faissCfg config.FaissConfig) (indexer.Indexer, error) {
+	// TODO
+	return nil, fmt.Errorf("FAISS indexer is not implemented yet")
 }
 
 // NewIndexer 索引器
-func NewIndexer(ctx context.Context) (idr indexer.Indexer, err error) {
+func NewIndexer(ctx context.Context) (indexer.Indexer, error) {
 	cfg := config.LoadConfig().Indexing.Indexer
-	if cfg.Type == "REDIS" {
-		redisCfg := cfg.Redis
-		redisClient := redisCli.NewClient(&redisCli.Options{
-			Addr:     redisCfg.Addr,
-			Protocol: 2,
-		})
-
-		config := &redis.IndexerConfig{
-			Client:    redisClient,
-			KeyPrefix: redisCfg.KeyPrefix,
-			BatchSize: redisCfg.BatchSize,
-			DocumentToHashes: func(ctx context.Context, doc *schema.Document) (*redis.Hashes, error) {
-				if doc.ID == "" {
-					doc.ID = uuid.New().String()
-				}
-				key := doc.ID
-
-				metadataBytes, err := json.Marshal(doc.MetaData)
-				if err != nil {
-					return nil, fmt.Errorf("failed to marshal metadata: %+v", err)
-				}
-
-				return &redis.Hashes{
-					Key: key,
-					Field2Value: map[string]redis.FieldValue{
-						redispkg.ContentField:  {Value: doc.Content, EmbedKey: redispkg.VectorField},
-						redispkg.MetadataField: {Value: metadataBytes},
-					},
-				}, nil
-			},
-		}
-
-		embeddingIns11, err := NewEmbedding(ctx)
-		if err != nil {
-			return nil, err
-		}
-		config.Embedding = embeddingIns11
-		idr, err = redis.NewIndexer(ctx, config)
-		if err != nil {
-			return nil, err
-		}
-		return idr, nil
+	switch cfg.Type {
+	case "REDIS":
+		return newRedisIndexer(ctx, cfg.Redis)
+	case "FAISS":
+		return newFaissIndexer(ctx, cfg.Faiss)
+	default:
+		return nil, fmt.Errorf("unsupported indexer type: %s", cfg.Type)
 	}
-	// TODO: 增加 FAISS 支持
-	return nil, fmt.Errorf("unsupported indexer type: %s", cfg.Type)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"audio2markdown/config"
 	"audio2markdown/graph"
 	"context"
 	"fmt"
@@ -20,7 +21,7 @@ func main() {
 
 	// 构造输入（如指定目录路径）
 	src := document.Source{
-		URI: "./your_input_dir", // 替换为你的目录路径
+		URI: config.LoadConfig().Indexing.FilePath,
 	}
 
 	// 执行图

@@ -18,7 +18,7 @@ Audio2Markdown 支持的场景包括但不限于：
 
 ### Step1. 依赖安装
 
-```shell
+```bash
 
 # 创建虚拟环境并进入
 python3 -m venv .audio2md
@@ -26,6 +26,10 @@ source .audio2md/bin/activate
 
 # 安装Python依赖
 pip install -r requirements.txt
+
+docker run -p 6379:6379 --name redismod \
+-v /mydata/redismod/data:/data \
+-d redislabs/redismod:preview
 
 ```
 
