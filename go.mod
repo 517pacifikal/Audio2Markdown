@@ -4,13 +4,13 @@ go 1.24.5
 
 require (
 	github.com/cloudwego/eino v0.3.52
-	github.com/cloudwego/eino-examples/quickstart/eino_assistant v0.0.0-20250717022601-b66582819cd8
 	github.com/cloudwego/eino-ext/components/document/loader/file v0.0.0-20250718041314-444cfd7822ec
 	github.com/cloudwego/eino-ext/components/document/transformer/splitter/markdown v0.0.0-20250718041314-444cfd7822ec
 	github.com/cloudwego/eino-ext/components/embedding/ark v0.0.0-20250718041314-444cfd7822ec
 	github.com/cloudwego/eino-ext/components/indexer/redis v0.0.0-20250718041314-444cfd7822ec
 	github.com/google/uuid v1.6.0
 	github.com/redis/go-redis/v9 v9.11.0
+	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.18
 )
 
 require (
@@ -46,7 +46,9 @@ require (
 	github.com/yargevad/filepathx v1.0.0 // indirect
 	golang.org/x/arch v0.12.0 // indirect
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
+	golang.org/x/sync v0.13.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

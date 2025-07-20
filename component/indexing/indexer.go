@@ -55,7 +55,7 @@ func newRedisIndexer(ctx context.Context, redisCfg config.RedisConfig) (indexer.
 
 // FAISS索引器
 func newFaissIndexer(ctx context.Context, faissCfg config.FaissConfig) (indexer.Indexer, error) {
-	// TODO
+	// TODO 尚未支持
 	return nil, fmt.Errorf("FAISS indexer is not implemented yet")
 }
 
