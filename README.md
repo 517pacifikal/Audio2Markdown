@@ -21,8 +21,13 @@ Audio2Markdown 支持的场景包括但不限于：
 ```bash
 
 # 安装并运行支持 RediSearch 的 Redis 服务，作为默认的 RAG 向量数据库
-docker pull redislabs/redismod:preview  
-docker run -d --name redismod -p 6379:6379 redislabs/redismod:preview
+docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+
+# 启动 redis 客户端
+audio2md % redis-cli -h 127.0.0.1 -p 6379
+
+# 创建索引，注意维度与实际使用的 embedding 模型对齐
+FT.CREATE rag ON HASH PREFIX 1 rag. SCHEMA content TEXT vector VECTOR FLAT 6 TYPE FLOAT32 DIM 1024 DISTANCE_METRIC COSINE
 
 ```
 

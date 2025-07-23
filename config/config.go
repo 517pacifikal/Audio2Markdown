@@ -13,8 +13,14 @@ var (
 
 // Config 配置结构体
 type Config struct {
-	AudioConfigs AudioConfigs   `json:"AUDIO_CONFIGS"`
-	Indexing     IndexingConfig `json:"INDEXING"`
+	Common          CommonConfig    `json:"COMMON"`
+	AudioConfigs    AudioConfigs    `json:"AUDIO_CONFIGS"`
+	Indexing        IndexingConfig  `json:"INDEXING"`
+	ChatModelConfig ChatModelConfig `json:"CHAT_MODEL"`
+}
+
+type CommonConfig struct {
+	OutputDir string `json:"OUTPUT_DIR"`
 }
 
 type AudioConfigs struct {
@@ -26,6 +32,12 @@ type IndexerConfig struct {
 	Type  string      `json:"TYPE"`
 	Redis RedisConfig `json:"REDIS"`
 	Faiss FaissConfig `json:"FAISS"`
+}
+
+type ChatModelConfig struct {
+	OpenAIAPIKey  string `json:"OPENAI_API_KEY"`
+	OpenAIModel   string `json:"OPENAI_MODEL_NAME"`
+	OpenAIBaseURL string `json:"OPENAI_BASE_URL"`
 }
 
 type RedisConfig struct {

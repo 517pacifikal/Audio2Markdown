@@ -1,4 +1,4 @@
-package component
+package indexing
 
 import (
 	"audio2markdown/config"

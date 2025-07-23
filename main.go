@@ -48,15 +48,34 @@ func runA2TGraph() {
 	audioFilePath := config.LoadConfig().AudioConfigs.Bytedance.AudioFile
 
 	// 执行图
-	text, err := audioGraph.Invoke(context.Background(), audioFilePath)
+	outputPath, err := audioGraph.Invoke(context.Background(), audioFilePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run audio to text graph: %v\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("Transcribed Text: %s\n", text)
+	fmt.Printf("Transcribed text path: %s\n", outputPath)
+}
+
+// runAgentGraph 构建并运行面试总结 Agent 图
+func runAgentGraph(txtFilePath string) {
+	// 构建 Agent 图
+	agentGraph, err := graph.BuildAgentGraph(context.Background())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to build Agent graph: %v\n", err)
+		os.Exit(1)
+	}
+
+	// 输入为 txt 文件路径
+	outputPath, err := agentGraph.Invoke(context.Background(), txtFilePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to run Agent graph: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Markdown summary exported to: %s\n", outputPath)
 }
 
 func main() {
-	runA2TGraph()
+	runAgentGraph("/Users/aaronwu/开发/audio2md/output/dialogue.txt")
 }
