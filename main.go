@@ -77,5 +77,6 @@ func runAgentGraph(txtFilePath string) {
 }
 
 func main() {
-	runAgentGraph("/Users/aaronwu/开发/audio2md/output/dialogue.txt")
+	// runAgentGraph("/Users/aaronwu/开发/audio2md/output/dialogue.txt")
+	runA2TGraph()
 }
