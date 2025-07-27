@@ -24,7 +24,7 @@ Audio2Markdown 支持的场景包括但不限于：
 docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 
 # 启动 redis 客户端
-audio2md % redis-cli -h 127.0.0.1 -p 6379
+redis-cli -h 127.0.0.1 -p 6379
 
 # 创建索引，注意维度与实际使用的 embedding 模型对齐
 FT.CREATE rag ON HASH PREFIX 1 rag. SCHEMA content TEXT vector VECTOR FLAT 6 TYPE FLOAT32 DIM 1024 DISTANCE_METRIC COSINE
